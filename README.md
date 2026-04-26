@@ -4,10 +4,16 @@
 To develop a neural network regression model for the given dataset.
 
 ## THEORY
-Explain the problem statement
+This experiment focuses on building a Neural Network regression model to predict continuous values from input data. It involves preprocessing the dataset through normalization and feature scaling, followed by designing a neural network with appropriate layers and activation functions.
+
+The model is trained using backpropagation and gradient descent, and its performance is evaluated using metrics such as MSE, MAE, and R² score. The study also explores how hyperparameters like learning rate and network depth influence accuracy, while applying validation and regularization techniques to ensure better generalization.
+
+Overall, the experiment provides practical insight into applying deep learning for real-world regression tasks.
+
 
 ## Neural Network Model
-Include the neural network model diagram.
+<img width="1100" height="699" alt="image" src="https://github.com/user-attachments/assets/5e8bddd0-cc0a-4aa2-911b-71a4351750b7" />
+
 
 ## DESIGN STEPS
 ### STEP 1: 
@@ -44,37 +50,93 @@ Use the trained model to predict  for a new input value .
 
 ## PROGRAM
 
-### Name:
+### Name: PREETHI A K
 
-### Register Number:
+### Register Number: 212223230156
 
-```python
+```
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+dataset1 = pd.read_csv('/content/drive/MyDrive/Deep Learning exp/DL EXP-1spreadsheet - Sheet1 (2).csv')
+X = dataset1[['INPUT']].values
+y = dataset1[['OUTPUT']].values
+dataset1.head()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=33)
+scaler = MinMaxScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+y_train_tensor = torch.tensor(y_train, dtype=torch.float32).view(-1, 1)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
+y_test_tensor = torch.tensor(y_test, dtype=torch.float32).view(-1, 1)
 class NeuralNet(nn.Module):
     def __init__(self):
         super().__init__()
         #Include your code here
+        self.fc1=nn.Linear(1,8)
+        self.fc2=nn.Linear(8,10)
+        self.fc3=nn.Linear(10,1)
+        self.relu=nn.ReLU()
+        self.history={'loss': []}
+  def forward(self,x):
+        x=self.relu(self.fc1(x))
+        x=self.relu(self.fc2(x))
+        x=self.fc3(x)
+        return x
 
 
 
 # Initialize the Model, Loss Function, and Optimizer
-
+lig=NeuralNet()
+criterion=nn.MSELoss()
+optimizer=optim.RMSprop(lig.parameters(),lr=0.001)
 
 
 def train_model(ai_brain, X_train, y_train, criterion, optimizer, epochs=2000):
     #Include your code here
+     for epoch in range (epochs):
+        optimizer. zero_grad()
+        loss=criterion(ai_brain(X_train), y_train)
+        loss. backward()
+        optimizer.step()
+        lig .history['loss'].append(loss.item())
+        if epoch % 200 == 0:
+            print(f'Epoch [{epoch}/{epochs}], Loss: {loss.item():.6f}')
+train_model(lig, X_train_tensor, y_train_tensor, criterion, optimizer)
+with torch.no_grad():
+    test_loss = criterion(lig(X_test_tensor), y_test_tensor)
+    print(f'Test Loss: {test_loss.item():.6f}')
+loss_df = pd.DataFrame(lig.history)
+import matplotlib.pyplot as plt
+loss_df.plot()
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.title("Loss during Training")
+plt.show()
+X_n1_1 = torch.tensor([[9]], dtype=torch.float32)
+prediction = lig(torch.tensor(scaler.transform(X_n1_1), dtype=torch.float32)).item()
+print(f'Prediction: {prediction}')
 
 ```
 
 ### Dataset Information
-Include screenshot of the generated data
+<img width="278" height="260" alt="image" src="https://github.com/user-attachments/assets/54f00c5c-8deb-472b-955f-fedebe9cd465" />
+
 
 ### OUTPUT
+<img width="512" height="276" alt="image" src="https://github.com/user-attachments/assets/e5fca581-e7ad-45e2-b2e5-1556a82cf999" />
 
 ### Training Loss Vs Iteration Plot
-Include your plot here
+<img width="750" height="526" alt="image" src="https://github.com/user-attachments/assets/36bc1523-903f-494d-96d6-334bd269fb6c" />
+
 
 ### New Sample Data Prediction
-Include your sample input and output here
+<img width="452" height="58" alt="image" src="https://github.com/user-attachments/assets/13913e4f-f844-4e3c-b293-b84f7f890464" />
+
 
 ## RESULT
 Thus, a neural network regression model was successfully developed and trained using PyTorch.
